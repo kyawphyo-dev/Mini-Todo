@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="todo-container">
+      <div class="todo-header">
+        <h1>Todo App</h1>
+      </div>
+      <div class="todo-input">
+        <input type="text" id="todo-text-box" placeholder="Add a new task" />
+        <button id="todo-add">Add</button>
+      </div>
+      <ul class="todo-list"></ul>
+    </div>
+
+    <script>
+      let todos = [];
+      const todoInput = document.getElementById("todo-text-box");
+      const addBtn = document.getElementById("todo-add");
+      const todoList = document.querySelector(".todo-list");
+      //console.log(todoInput);
+
+      addBtn.addEventListener("click", () => {
+        const todoItem = {
+          text: todoInput.value.trim(),
+          isCompleted: false,
+        };
+        if (todoItem.text !== "") {
+          todos.push(todoItem);
+          todoInput.value = "";
+          renderTodos();
+        }
+      });
+
+      function renderTodos() {
+        todoList.innerHTML = "";
+        for (let i = 0; i < todos.length; i++) {
+          let liElement = document.createElement("li");
+          liElement.className = "todo-item";
+          let spanElement = document.createElement("span");
+          spanElement.className = todos[i].isCompleted
+            ? "todo-text completed"
+            : "todo-text";
+          spanElement.innerText = todos[i].text;
+          let divElement = document.createElement("div");
+          divElement.className = "todo-actions";
+          let completeBtn = document.createElement("button");
+          completeBtn.className = "complete";
+          completeBtn.innerText = todos[i].isCompleted
+            ? "Incomplete"
+            : "Complete";
+          completeBtn.addEventListener("click", () => {
+            todos[i].isCompleted = !todos[i].isCompleted;
+            renderTodos();
+          });
+          let editBtn = document.createElement("button");
+          editBtn.className = "edit";
+          editBtn.innerText = "Edit";
+          editBtn.addEventListener("click", () => {
+            const newText = prompt("Edit your task:", todos[i].text);
+            if (newText.trim() !== "") {
+              todos[i].text = newText;
+              renderTodos();
+            }
+          });
+          let deleteBtn = document.createElement("button");
+          deleteBtn.className = "delete";
+          deleteBtn.innerText = "Delete";
+          deleteBtn.addEventListener("click", () => {
+            todos.splice(i, 1);
+            renderTodos();
+          });
+          liElement.appendChild(spanElement);
+          divElement.appendChild(completeBtn);
+          divElement.appendChild(editBtn);
+          divElement.appendChild(deleteBtn);
+          liElement.appendChild(divElement);
+          todoList.appendChild(liElement);
+        }
+      }
+    </script>
+  </body>
+</html>
